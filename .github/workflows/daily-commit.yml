@@ -1,0 +1,34 @@
+name: Daily Automated Commit
+
+on:
+  schedule:
+    # Runs every day at 05:30 UTC (cron: minute hour day month weekday)
+    - cron: '30 5 * * *'
+  workflow_dispatch: # This lets you trigger it manually for testing!
+
+jobs:
+  daily-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Download your repo's code onto the GitHub runner machine
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: This is the step with YOUR EMAIL in the name (required!)
+      - name: Daily update - 23f2005675@ds.study.iitm.ac.in
+        run: |
+          echo "Daily automated update - $(date)" >> daily_log.txt
+
+      # Step 3: Set up Git identity so it can make a commit
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "23f2005675@ds.study.iitm.ac.in"
+
+      # Step 4: Stage the changed file, commit it, and push it back
+      - name: Commit and push changes
+        run: |
+          git add daily_log.txt
+          git commit -m "Automated daily update: $(date)"
+          git push
